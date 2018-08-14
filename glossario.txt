@@ -9,7 +9,6 @@
 法规 cinita regolamenti
 行政主管部门 cinita dipartimenti amministrativi responsabili
 实施行为 cinita adottare condotte
-法律责任 cinita responsabilità legali/ giuridiche
 环境责任 cinita responsabilità ambientali
 负担 cinita carico
 费用 cinita costi
