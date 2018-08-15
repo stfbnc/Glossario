@@ -3,6 +3,8 @@
  */
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+
 //import java.awt.event.MouseAdapter;
 //import java.awt.event.MouseEvent;
 import javax.swing.JButton;
@@ -10,6 +12,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 //import javax.swing.text.BadLocationException;
 //import javax.swing.text.Utilities;
 import java.io.IOException;
@@ -25,14 +28,14 @@ public class Glossario{
     
     public void SearchMethod(String file_name,String lsep,JTextField txt,JTextArea txtAr){
         File inFile = new File(file_name);
-        String toSearch = txt.getText();
+        String toSearch = txt.getText().trim().toLowerCase();
         txtAr.setText("");
         if(toSearch != null && !toSearch.isEmpty()){
             Pattern p = Pattern.compile(toSearch);
             try(BufferedReader br = new BufferedReader(new FileReader(inFile))){
                 String line;
                 while((line = br.readLine()) != null){
-                    Matcher m = p.matcher(line);
+                    Matcher m = p.matcher(line.toLowerCase());
                     if(m.find()){
                     	String cin = line.split(lsep)[0];
                     	String ita = line.split(lsep)[1];
@@ -45,61 +48,133 @@ public class Glossario{
         }
     }
     
-    public void InsertMethod(JTextField txt){
-        File inFile = new File("glossario.txt");
-        String in_name = txt.getText();
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(inFile,true))){
-            bw.write(in_name + System.getProperty("line.separator"));
-        }catch(IOException ioexc){
-            ioexc.printStackTrace();
-        }
+    public void InsertMethod(String file_name,String lsep){
+    	JFrame win = new JFrame("Insert");
+    	win.setSize(500,400);
+    	win.setVisible(true);
+    	win.setResizable(false);
+    	win.setLayout(null);
+    	JLabel label1 = new JLabel("Chinese");
+    	label1.setBounds(20,20,50,30);
+    	JTextField text1 = new JTextField("");
+    	text1.setBounds(20,60,460,100);
+    	JLabel label2 = new JLabel("Italian");
+    	label2.setBounds(20,180,50,30);
+    	JTextField text2 = new JTextField("");
+    	text2.setBounds(20,220,460,100);
+    	JButton button1 = new JButton("Cancel");
+        button1.setBounds(135,350,100,30);
+        JButton button2 = new JButton("Save");
+        button2.setBounds(265,350,100,30);
+        win.add(label1);
+        win.add(text1);
+        win.add(label2);
+        win.add(text2);
+        win.add(button1);
+        win.add(button2);
+        button2.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+            	if((text1.getText() != null && !text1.getText().isEmpty()) && (text2.getText() != null && !text2.getText().isEmpty())){
+            		File inFile = new File(file_name);
+                    try(BufferedWriter bw = new BufferedWriter(new FileWriter(inFile,true))){
+                        bw.write(text1.getText().trim() + lsep + text2.getText().trim() + System.getProperty("line.separator"));
+                        win.dispatchEvent(new WindowEvent(win,WindowEvent.WINDOW_CLOSING));
+            			//message di riuscita inserzione
+                    }catch(IOException ioexc){
+                        ioexc.printStackTrace();
+                    }
+            	}//else messagebox con scritto text not inserted
+            }
+        });
+        button1.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+            	win.dispatchEvent(new WindowEvent(win,WindowEvent.WINDOW_CLOSING));
+            }
+        });
     }
     
-    public void RemoveMethod(JTextField txt){
-        File inFile = new File("glossario.txt");
-        File outFile = new File("temp.txt");
-        try(BufferedReader br = new BufferedReader(new FileReader(inFile));
-            BufferedWriter bw = new BufferedWriter(new FileWriter(outFile))){
-            String line;
-            while((line = br.readLine()) != null){
-                if(line.trim().equals(txt.getText())){
-                    continue;
-                }else{
-                    bw.write(line + System.getProperty("line.separator"));
-                }
-            }
-            outFile.renameTo(inFile);
-        }catch(IOException ioexc){
-            ioexc.printStackTrace();
-        }
+    public void RemoveMethod(String file_name,String lsep,JTextArea txtAr){
+    	String lsel = txtAr.getSelectedText();
+    	if(lsel != null){
+    		String chin_txt = lsel.split("--")[0].trim();
+        	String it_txt = lsel.split("--")[1].trim();
+        	File inFile = new File(file_name);
+        	File outFile = new File("temp.txt");
+        	try(BufferedReader br = new BufferedReader(new FileReader(inFile));
+        		BufferedWriter bw = new BufferedWriter(new FileWriter(outFile))){
+        		String line;
+        		while((line = br.readLine()) != null){
+        			if(line.trim().equals(chin_txt + lsep + it_txt)){
+        				continue;
+        			}else{
+        				bw.write(line + System.getProperty("line.separator"));
+        			}
+        		}
+        		outFile.renameTo(inFile);
+        		//message di riuscita
+        	}catch(IOException ioexc){
+        		ioexc.printStackTrace();
+        	}
+    	}//else messagebox dicendo di selezionare prima il testo
     }
     
     public void SubstituteMethod(String file_name,String lsep,JTextField txt,JTextArea txtAr){
     	String lsel = txtAr.getSelectedText();
     	if(lsel != null){
-    		JFrame change_window = new JFrame("Change");
-    		change_window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    		change_window.setSize(300,200);
-    		change_window.setVisible(true);
-    		change_window.setResizable(false);
-    		change_window.setLayout(null);
-    		File inFile = new File(file_name);
-    		File outFile = new File("temp.txt");
-    		try(BufferedReader br = new BufferedReader(new FileReader(inFile));
-    			BufferedWriter bw = new BufferedWriter(new FileWriter(outFile))){
-    			String line;
-    			while((line = br.readLine()) != null){
-    				if(line.trim().equals(lsel.split("--")[0].trim() + lsep + lsel.split("--")[1].trim())){
-    					bw.write(line + System.getProperty("line.separator"));
-    					txt.setText(line);
-    				}else{
-    					bw.write(line + System.getProperty("line.separator"));
-    				}
-    			}
-    			outFile.renameTo(inFile);
-    		}catch(IOException ioexc){
-    			ioexc.printStackTrace();
-    		}
+    		String chin_txt = lsel.split("--")[0].trim();
+        	String it_txt = lsel.split("--")[1].trim();
+    		JFrame win = new JFrame("Change");
+        	win.setSize(500,400);
+        	win.setVisible(true);
+        	win.setResizable(false);
+        	win.setLayout(null);
+        	JLabel label1 = new JLabel("Chinese");
+        	label1.setBounds(20,20,50,30);
+        	JTextField text1 = new JTextField(chin_txt);
+        	text1.setBounds(20,60,460,100);
+        	JLabel label2 = new JLabel("Italian");
+        	label2.setBounds(20,180,50,30);
+        	JTextField text2 = new JTextField(it_txt);
+        	text2.setBounds(20,220,460,100);
+        	JButton button1 = new JButton("Cancel");
+            button1.setBounds(135,350,100,30);
+            JButton button2 = new JButton("Save");
+            button2.setBounds(265,350,100,30);
+            win.add(label1);
+            win.add(text1);
+            win.add(label2);
+            win.add(text2);
+            win.add(button1);
+            win.add(button2);
+            button2.addActionListener(new ActionListener(){
+                public void actionPerformed(ActionEvent e){
+                	if((text1.getText() != null && !text1.getText().isEmpty()) && (text2.getText() != null && !text2.getText().isEmpty())){
+                		File inFile = new File(file_name);
+                		File outFile = new File("temp.txt");
+                		try(BufferedReader br = new BufferedReader(new FileReader(inFile));
+                			BufferedWriter bw = new BufferedWriter(new FileWriter(outFile))){
+                			String line;
+                			while((line = br.readLine()) != null){
+                				if(line.trim().equals(chin_txt + lsep + it_txt)){
+                					bw.write(text1.getText() + lsep + text2.getText() + System.getProperty("line.separator"));
+                				}else{
+                					bw.write(line + System.getProperty("line.separator"));
+                				}
+                			}
+                			outFile.renameTo(inFile);
+                			win.dispatchEvent(new WindowEvent(win,WindowEvent.WINDOW_CLOSING));
+                			//message di riuscita sostituzione
+                		}catch(IOException ioexc){
+                			ioexc.printStackTrace();
+                		}
+                	}//else messagebox con scritto text not inserted
+                }
+            });
+            button1.addActionListener(new ActionListener(){
+                public void actionPerformed(ActionEvent e){
+                	win.dispatchEvent(new WindowEvent(win,WindowEvent.WINDOW_CLOSING));
+                }
+            });
     	}
     }
     
@@ -169,14 +244,14 @@ public class Glossario{
         remove_button.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
             	Glossario gl = new Glossario();
-                gl.RemoveMethod(text);
+                gl.RemoveMethod(file_name,lsep,textArea);
             }
         });
         
         insert_button.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
             	Glossario gl = new Glossario();
-                gl.InsertMethod(text);
+                gl.InsertMethod(file_name,lsep);
             }
         });
         
@@ -193,3 +268,9 @@ public class Glossario{
     }
     
 }
+
+//cercare tutto lowercase
+//bind search button con enter
+//icona
+//inserire uno sfondo
+//bottoni colorati
