@@ -11,14 +11,18 @@ import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
 //import javax.swing.text.BadLocationException;
 //import javax.swing.text.Utilities;
+
 
 public class Glossario{
     
     public void GlossGUI(String fn,String s){
         
         JFrame main_window = new JFrame("GLOSSARIO");
+        main_window.setContentPane(new JLabel(new ImageIcon("chin_back.jpg")));
         
         JTextField text = new JTextField("");
         text.setBounds(40,20,720,30);
@@ -111,7 +115,4 @@ public class Glossario{
 }
 
 //bind search button con enter
-//icona
-//inserire uno sfondo
-//bottoni colorati
 //in insert controllare se i termini esistono già ed avvertire
