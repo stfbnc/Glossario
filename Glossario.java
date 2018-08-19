@@ -2,6 +2,8 @@
  Main class for Glossario
  */
 import classes.GlossMeth;
+
+//import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 //import java.awt.event.MouseAdapter;
@@ -14,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 //import javax.swing.text.BadLocationException;
+//import javax.swing.text.DefaultHighlighter;
 //import javax.swing.text.Utilities;
 
 
@@ -31,24 +34,27 @@ public class Glossario{
         textArea.setBounds(20,70,760,360);
         textArea.setEditable(false);
         /*textArea.addMouseListener(new MouseAdapter(){
-         @Override
-         public void mouseClicked(MouseEvent e){
-         if(e.getButton() != MouseEvent.BUTTON1){
-         return;
-         }
-         if(e.getClickCount() != 1){
-         return;
-         }
-         int offset = textArea.viewToModel2D(e.getPoint());
-         try{
-         int rowStart = Utilities.getRowStart(textArea,offset);
-         int rowEnd = Utilities.getRowEnd(textArea,offset);
-         String selectedLine = textArea.getText().substring(rowStart,rowEnd);
-         text.setText(selectedLine.split("--")[0].trim() + selectedLine.split("--")[1].trim());
-         }catch(BadLocationException e1){
-         e1.printStackTrace();
-         }
-         }
+        	@Override
+        	public void mouseClicked(MouseEvent e){
+        		if(e.getButton() != MouseEvent.BUTTON1){
+        			return;
+        		}
+        		if(e.getClickCount() != 1){
+        			return;
+        		}
+        		int offset = textArea.viewToModel2D(e.getPoint());
+        		DefaultHighlighter highlighter =  (DefaultHighlighter)textArea.getHighlighter();
+                DefaultHighlighter.DefaultHighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.red);
+                highlighter.setDrawsLayeredHighlights(false);
+        		try{
+        			int rowStart = Utilities.getRowStart(textArea,offset);
+        			int rowEnd = Utilities.getRowEnd(textArea,offset);
+        			highlighter.addHighlight(rowStart,rowEnd,painter);
+        			//String selectedLine = textArea.getText().substring(rowStart,rowEnd);
+        		}catch(BadLocationException e1){
+        			e1.printStackTrace();
+        		}
+        	}
          });*/
         
         JScrollPane scrollPane = new JScrollPane(textArea);
@@ -69,6 +75,7 @@ public class Glossario{
         main_window.add(remove_button);
         main_window.add(insert_button);
         main_window.add(substitute_button);
+        main_window.getRootPane().setDefaultButton(search_button);
         
         search_button.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
@@ -113,6 +120,3 @@ public class Glossario{
     }
     
 }
-
-//bind search button con enter
-//in insert controllare se i termini esistono già ed avvertire

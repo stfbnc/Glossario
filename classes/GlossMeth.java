@@ -68,6 +68,7 @@ public class GlossMeth{
         win.add(text2);
         win.add(button1);
         win.add(button2);
+        win.getRootPane().setDefaultButton(button2);
         button2.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
             	if((text1.getText() != null && !text1.getText().isEmpty()) && (text2.getText() != null && !text2.getText().isEmpty())){
@@ -146,6 +147,7 @@ public class GlossMeth{
             win.add(text2);
             win.add(button1);
             win.add(button2);
+            win.getRootPane().setDefaultButton(button2);
             button2.addActionListener(new ActionListener(){
                 public void actionPerformed(ActionEvent e){
                 	if((text1.getText() != null && !text1.getText().isEmpty()) && (text2.getText() != null && !text2.getText().isEmpty())){
