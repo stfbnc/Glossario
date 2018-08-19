@@ -17,8 +17,6 @@ import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class GlossMeth{
     
@@ -27,16 +25,19 @@ public class GlossMeth{
         String toSearch = txt.getText().trim().toLowerCase();
         txtAr.setText("");
         if(toSearch != null && !toSearch.isEmpty()){
-            Pattern p = Pattern.compile(toSearch);
             try(BufferedReader br = new BufferedReader(new FileReader(inFile))){
                 String line;
                 while((line = br.readLine()) != null){
-                    Matcher m = p.matcher(line.toLowerCase());
-                    if(m.find()){
-                    	String cin = line.split(lsep)[0];
-                    	String ita = line.split(lsep)[1];
-                        txtAr.append(String.format("%-25s\t--\t%-50s",cin,ita) + System.getProperty("line.separator"));
-                    }
+                	if(line.contains(lsep)){
+                		String cin = line.split(lsep)[0];
+                		String ita = line.split(lsep)[1];
+                		String newLine = cin + " " + ita;
+                		if(newLine.toLowerCase().contains(toSearch)){
+                			txtAr.append(String.format("%-23s\t--\t%-50s",cin,ita) + System.getProperty("line.separator"));
+                		}
+                	}else{
+                		continue;
+                	}
                 }
             }catch(IOException ioexc){
                 ioexc.printStackTrace();

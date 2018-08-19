@@ -3,6 +3,7 @@
  */
 import classes.GlossMeth;
 
+import java.awt.Font;
 //import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,8 +32,10 @@ public class Glossario{
         text.setBounds(40,20,720,30);
         
         JTextArea textArea = new JTextArea();
+        textArea.setFont(new Font("monospaced",Font.PLAIN,12));
         textArea.setBounds(20,70,760,360);
         textArea.setEditable(false);
+        //textArea.setLineWrap(true);
         /*textArea.addMouseListener(new MouseAdapter(){
         	@Override
         	public void mouseClicked(MouseEvent e){
